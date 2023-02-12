@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewCustomerCreatedEvent;
+use App\Jobs\NewCustomerCreatedJob;
 use App\Models\Customer;
 use Illuminate\Http\Request;
 
@@ -20,6 +22,8 @@ class SqlController extends Controller
             'phone'=> $request->phone,
         ]);
         if($customer){
+            NewCustomerCreatedJob::dispatch($customer);
+            //NewCustomerCreatedEvent::dispatch($customer);
             return redirect()->route('customers')->with('success','Customer added successfully..!');
         }else{
             return back()->with('message','Somthing Went Wrong..!');
@@ -52,6 +56,7 @@ class SqlController extends Controller
         ]);
         if($customer){
             return redirect()->route('customers')->with('success','Customer updated successfully..!');
+            
         }else{
             return back()->with('message','Somthing Went Wrong..!');
         }
